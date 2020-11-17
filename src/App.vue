@@ -1,28 +1,42 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <ul v-if="posts && posts.length">
+      <li v-for="(post, index) in posts" :key="index">
+        <p><strong>{{ post.title }}</strong></p>
+        <p>{{ post.body }}</p>
+      </li>
+    </ul>
+    <ul v-if="errors && errors.length">
+      <li v-for="(error, index) in errors" :key="index">
+        {{ error.message }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from "axios";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  data: () => ({
+    posts: [],
+    errors: [],
+  }),
+  methods: {
+  },
+  created() {
+    axios
+      .get(`http://jsonplaceholder.typicode.com/posts`)
+      .then((response) => {
+        this.posts = response.data;
+      })
+      .catch((e) => {
+        this.errors.push(e);
+      });
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
